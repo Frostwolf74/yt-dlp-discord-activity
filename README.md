@@ -1,1 +1,2 @@
 # yt-dlp-discord-activity
+StartServer.sh needs to be running in order to fetch videos from youtube with yt-dlp
