@@ -5,3 +5,178 @@ backend listening on http://localhost:3000
 backend listening on http://localhost:3000
 backend listening on http://localhost:3000
 backend listening on http://localhost:3000
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+node:internal/modules/cjs/loader:1423
+  throw err;
+  ^
+
+Error: Cannot find module '/home/fw/Documents/GitHub/yt-dlp-discord-activity/backend.js'
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1420:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1058:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1063:22)
+    at Module._load (node:internal/modules/cjs/loader:1226:37)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+
+Node.js v24.9.0
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+yt-dlp backend listening on http://127.0.0.1:3000
+rm: cannot remove './videos/*': No such file or directory
+WARNING: [youtube] qnkuBUAwfe0: Signature extraction failed: Some formats may be missing
+         player = https://www.youtube.com/s/player/b32979e9/player_ias.vflset/en_US/base.js
+         Please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+WARNING: [youtube] qnkuBUAwfe0: Some web_safari client https formats have been skipped as they are missing a url. YouTube is forcing SABR streaming for this client. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+WARNING: [youtube] qnkuBUAwfe0: Some web client https formats have been skipped as they are missing a url. YouTube is forcing SABR streaming for this client. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+Creed - One Last Breath (Official HD Music Video).mp4
+[youtube] Extracting URL: qnkuBUAwfe0
+[youtube] qnkuBUAwfe0: Downloading webpage
+[youtube] qnkuBUAwfe0: Downloading android sdkless player API JSON
+[youtube] qnkuBUAwfe0: Downloading tv client config
+[youtube] qnkuBUAwfe0: Downloading tv player API JSON
+[youtube] qnkuBUAwfe0: Downloading web safari player API JSON
+[youtube] qnkuBUAwfe0: Downloading player b32979e9-main
+WARNING: [youtube] qnkuBUAwfe0: Signature extraction failed: Some formats may be missing
+         player = https://www.youtube.com/s/player/b32979e9/player_ias.vflset/en_US/base.js
+         Please report this issue on  https://github.com/yt-dlp/yt-dlp/issues?q= , filling out the appropriate issue template. Confirm you are on the latest version using  yt-dlp -U
+WARNING: [youtube] qnkuBUAwfe0: Some web_safari client https formats have been skipped as they are missing a url. YouTube is forcing SABR streaming for this client. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+WARNING: [youtube] qnkuBUAwfe0: Some web client https formats have been skipped as they are missing a url. YouTube is forcing SABR streaming for this client. See  https://github.com/yt-dlp/yt-dlp/issues/12482  for more details
+[youtube] qnkuBUAwfe0: Downloading m3u8 information
+[info] qnkuBUAwfe0: Downloading 1 format(s): 399+251
+[download] ./Creed - One Last Breath (Official HD Music Video).mp4 has already been downloaded

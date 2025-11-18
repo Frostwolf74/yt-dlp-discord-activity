@@ -1,10 +1,29 @@
-import { DiscordSDK } from "@discord/embedded-app-sdk";
-
-const discord = new DiscordSDK("1309612526580928515");
-await discord.ready();
-
-// discord.activities.send("state_update", { filename: name })
-
+// replace any static "import" / top-level await usage for the Discord SDK
+// with a safe dynamic import + fallback so a failed import doesn't stop the file.
+(async () => {
+    let discord = null;
+    try {
+        // dynamic import avoids bare-specifier parse errors in the browser
+        const mod = await import('@discord/embedded-app-sdk').catch(() => null);
+        const DiscordSDK = mod?.DiscordSDK ?? mod?.default ?? null;
+        if (DiscordSDK) {
+            discord = new DiscordSDK("1309612526580928515");
+            await discord.ready();
+        } else {
+            console.warn('Discord SDK not available in this environment — continuing without it.');
+        }
+    } catch (err) {
+        console.warn('Failed to load Discord SDK, using stub:', err);
+        // minimal stub so downstream code that calls discord.activities.send won't blow up
+        discord = {
+            activities: { send: () => {} },
+            ready: async () => {}
+        };
+        await discord.ready();
+    }
+    // expose for debugging if needed
+    window.__discord = discord;
+})();
 
 async function downloadVideo(link) {
     const res = await fetch('http://localhost:3000/download', {
@@ -91,3 +110,7 @@ async function handleKeyInput(e){
         console.error(err)
     }
 }
+
+window.handleKeyInput = handleKeyInput;
+window.loadVideo = loadVideo;
+window.parseLink = parseLink;
