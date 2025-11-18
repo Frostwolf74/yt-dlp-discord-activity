@@ -1,13 +1,3 @@
-import { DiscordSDK } from "@discord/embedded-app-sdk";
-
-const discord = new DiscordSDK("1309612526580928515");
-await discord.ready();
-
-// discord.activities.send("state_update", { filename: name })
-
-
-
-
 async function downloadVideo(link) {
     const res = await fetch('http://localhost:3000/download', {
         method: 'POST',
@@ -93,3 +83,6 @@ async function handleKeyInput(e){
         console.error(err)
     }
 }
+
+// expose to global for inline HTML usage
+window.handleKeyInput = handleKeyInput;
