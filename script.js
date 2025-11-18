@@ -1,3 +1,11 @@
+import { DiscordSDK } from "@discord/embedded-app-sdk";
+
+const discord = new DiscordSDK("1309612526580928515");
+await discord.ready();
+
+// discord.activities.send("state_update", { filename: name })
+
+
 async function downloadVideo(link) {
     const res = await fetch('http://localhost:3000/download', {
         method: 'POST',
@@ -49,7 +57,7 @@ async function loadVideo() { // called externally in index.html
     const file = await downloadVideo(parseLink(name));
 
     let videoTitle = document.getElementById("video-title");
-    videoTitle.textContent = file;
+    videoTitle.textContent = file.replace(".mp4", "");
 
     console.log('Downloaded file:', file);
 
@@ -83,6 +91,3 @@ async function handleKeyInput(e){
         console.error(err)
     }
 }
-
-// expose to global for inline HTML usage
-window.handleKeyInput = handleKeyInput;

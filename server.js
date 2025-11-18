@@ -1,12 +1,6 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { DiscordSDK } from "@discord/embedded-app-sdk";
-
-const discord = new DiscordSDK("1309612526580928515");
-await discord.ready();
-
-// discord.activities.send("state_update", { filename: name })
 
 const app = express();
 const PORT = process.env.PORT || 3000;
