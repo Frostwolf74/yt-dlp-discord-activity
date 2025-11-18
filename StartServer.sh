@@ -25,7 +25,7 @@ start_if_not_running() {
     pid=$(cat "$pidfile" 2>/dev/null || true)
     if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
       echo "Already running (pid $pid) - leaving as-is"
-      return
+      return 1
     else
       rm -f "$pidfile"
     fi
@@ -33,32 +33,46 @@ start_if_not_running() {
   bash -c "$cmd" >> "$logfile" 2>&1 &
   echo $! > "$pidfile"
   echo "Started: $cmd (pid $(cat "$pidfile")) -> $logfile"
+  return 0
 }
 
 trap 'cleanup; exit' INT TERM
 
+# Try to start backend and server. start_if_not_running returns 0 when it started the process.
 start_if_not_running "node \"$ROOT/public/backend.cjs\"" "$PID_BACKEND" "$LOG_BACKEND"
+BACK_STARTED=$?
 start_if_not_running "node \"$ROOT/server.js\"" "$PID_SERVER" "$LOG_SERVER"
+SRV_STARTED=$?
 
+# Read pids (may be pre-existing)
 BACK_PID=$(cat "$PID_BACKEND" 2>/dev/null || true)
 SRV_PID=$(cat "$PID_SERVER" 2>/dev/null || true)
 
 echo "Press Ctrl+C to stop both processes."
-echo "Backend pid: $BACK_PID"
-echo "Server pid:  $SRV_PID"
+echo "Backend pid: $BACK_PID (started_by_script=$BACK_STARTED)"
+echo "Server pid:  $SRV_PID (started_by_script=$SRV_STARTED)"
 
-# Wait for backend first; if it exits, leave server running and notify.
-if [ -n "$BACK_PID" ]; then
-  echo "Waiting for backend (pid $BACK_PID)..."
-  wait "$BACK_PID"
-  echo "Backend (pid $BACK_PID) exited with status $?. The server will remain running. Press Ctrl+C to stop the server."
-fi
+# Monitor both PIDs without using wait on non-child processes.
+# Loop will exit when neither PID exists or is running.
+while true; do
+  any_running=0
 
-# Now wait for the server. When the server exits (or user presses Ctrl+C), cleanup runs.
-if [ -n "$SRV_PID" ]; then
-  echo "Waiting for server (pid $SRV_PID)..."
-  wait "$SRV_PID"
-  echo "Server (pid $SRV_PID) exited with status $?."
-fi
+  if [ -n "$BACK_PID" ] && kill -0 "$BACK_PID" 2>/dev/null; then
+    any_running=1
+  else
+    BACK_PID=""
+  fi
 
+  if [ -n "$SRV_PID" ] && kill -0 "$SRV_PID" 2>/dev/null; then
+    any_running=1
+  else
+    SRV_PID=""
+  fi
+
+  [ "$any_running" -eq 0 ] && break
+
+  sleep 1
+done
+
+echo "No monitored processes are running anymore."
 cleanup
