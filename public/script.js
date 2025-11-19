@@ -28,17 +28,18 @@
 const BACKEND_BASE = `${location.protocol}//${location.hostname}:3000`;
 
 async function downloadVideo(link) {
-    const res = await fetch(`${BACKEND_BASE}/download`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link })
-    });
-    if (!res.ok) {
-        const txt = await res.text();
-        throw new Error('Download failed: ' + txt);
-    }
-    const data = await res.json();
-    return data.filename;
+  const res = await fetch(`${BACKEND_BASE}/download`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ link })
+  });
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error('Download failed: ' + txt);
+  }
+  const data = await res.json();
+  // backend now returns basename only
+  return data.filename;
 }
 
 function parseLink(input) {
@@ -69,21 +70,15 @@ function parseLink(input) {
     return null;
 }
 
-async function loadVideo() { // called externally in index.html
-    const name = document.getElementById("fileInput").value.trim();
-    if (!name) return;
-
-    const player = document.getElementById("player");
-
-    const file = await downloadVideo(parseLink(name));
-
-    let videoTitle = document.getElementById("video-title");
-    videoTitle.textContent = file.replace(".mp4", "");
-
-    console.log('Downloaded file:', file);
-
-    player.src = `./videos/${file}`; // corrected path, no extra quotes
-    player.play().catch(() => {});
+async function loadVideo() {
+  const filename = await downloadVideo(parseLink(document.getElementById("fileInput").value.trim()));
+  const fileUrl = '/videos/' + encodeURIComponent(filename);
+  // optional HEAD check:
+  const head = await fetch(fileUrl, { method: 'HEAD' });
+  if (!head.ok) throw new Error('File not served: ' + fileUrl);
+  const player = document.getElementById('player');
+  player.src = fileUrl;
+  await player.play().catch(()=>{});
 }
 
 async function handleKeyInput(e){

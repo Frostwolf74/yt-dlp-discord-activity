@@ -216,8 +216,11 @@ const server = http.createServer(async (req, res) => {
         }
 
         const filename = (await getFilenameForLink(link)).trim();
+        // after download completes and you determine `filename` (may be absolute)
+        const filenameBasename = path.basename(filename);
+        console.log('[backend] returning filename (basename):', filenameBasename);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ filename }));
+        res.end(JSON.stringify({ filename: filenameBasename }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end(String(err.message || err));
