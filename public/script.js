@@ -34,32 +34,12 @@ async function downloadVideo(link) {
     body: JSON.stringify({ link })
   });
   if (!res.ok) {
-    const txt = await res.text();
-    throw new Error('Download failed: ' + txt);
+    const txt = await res.text().catch(() => '');
+    throw new Error('Download failed: ' + (txt || res.status));
   }
   const data = await res.json();
   // backend returns basename only
   return data.filename;
-}
-
-async function loadVideo(link) {
-  const fileBasename = await downloadVideo(link); // e.g. "Creed - One Last Breath (...).mp4"
-  console.log('Downloaded file (basename):', fileBasename);
-
-  // update UI/title with basename only
-  const titleEl = document.getElementById('videoTitle');
-  if (titleEl) titleEl.textContent = fileBasename;
-
-  // build safe URL for the file — encode only the filename part
-  const fileUrl = '/videos/' + encodeURIComponent(fileBasename);
-
-  // optional HEAD check
-  const head = await fetch(fileUrl, { method: 'HEAD' });
-  if (!head.ok) throw new Error('File not found on server: ' + fileUrl);
-
-  const player = document.getElementById('player');
-  player.src = fileUrl;
-  await player.play().catch(() => {});
 }
 
 function parseLink(input) {
@@ -90,44 +70,60 @@ function parseLink(input) {
     return null;
 }
 
-async function loadVideo() {
-  const filename = await downloadVideo(parseLink(document.getElementById("fileInput").value.trim()));
-  const fileUrl = '/videos/' + encodeURIComponent(filename);
-  // optional HEAD check:
-  const head = await fetch(fileUrl, { method: 'HEAD' });
-  if (!head.ok) throw new Error('File not served: ' + fileUrl);
+async function loadVideoFromInput() {
+  const raw = document.getElementById("fileInput")?.value || '';
+  const idOrUrl = parseLink(raw) ? `https://www.youtube.com/watch?v=${parseLink(raw)}` : raw.trim();
+  if (!idOrUrl) throw new Error('No URL or ID provided');
+
   const player = document.getElementById('player');
-  player.src = fileUrl;
-  await player.play().catch(()=>{});
+  const status = document.getElementById('status');
+  if (status) {
+    status.style.display = 'block';
+    status.style.color = 'green';
+    status.textContent = 'Loading video...';
+  }
+
+  try {
+    const filename = await downloadVideo(idOrUrl); // basename from backend
+    console.log('Downloaded file (basename):', filename);
+
+    // update UI/title with basename only (match index.html id)
+    const titleEl = document.getElementById('video-title');
+    if (titleEl) titleEl.textContent = filename;
+
+    // build safe URL for the file — encode only the filename part
+    const fileUrl = '/videos/' + encodeURIComponent(filename);
+
+    // optional HEAD check
+    const head = await fetch(fileUrl, { method: 'HEAD' });
+    if (!head.ok) throw new Error('File not served: ' + fileUrl);
+
+    player.src = fileUrl;
+    await player.play().catch(()=>{});
+    if (status) status.style.display = 'none';
+    return filename;
+  } catch (err) {
+    if (status) {
+      status.style.display = 'block';
+      status.style.color = 'red';
+      status.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
+      setTimeout(() => {
+        status.style.display = 'none';
+        status.style.color = 'green';
+      }, 5000);
+    }
+    console.error(err);
+    throw err;
+  }
 }
 
 async function handleKeyInput(e){
     if(e.key !== 'Enter') return;
-
-    const status = document.getElementById('status');
-
-    if(status) {
-        status.style.color = 'green';
-        status.textContent = 'Loading Video';
-        status.style.display = 'block';
-    }
-
-    try{
-        await loadVideo();
-        if(status) status.style.display = 'none';
-    } catch (err){
-        if(status){
-            status.style.color = 'red';
-            status.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
-            setTimeout(() => {
-                status.style.display = 'none';
-                status.style.color = 'green';
-            }, 5000);
-        }
-        console.error(err)
-    }
+    // prevent default form behavior if any
+    e.preventDefault();
+    await loadVideoFromInput().catch(()=>{});
 }
 
 window.handleKeyInput = handleKeyInput;
-window.loadVideo = loadVideo;
+window.loadVideo = loadVideoFromInput;
 window.parseLink = parseLink;
