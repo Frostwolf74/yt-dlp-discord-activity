@@ -189,7 +189,7 @@ const server = http.createServer(async (req, res) => {
       try {
         const { link } = JSON.parse(body || '{}');
         if (!link) { res.writeHead(400); return res.end('missing link'); }
-
+        const safeLink = String(link).replace(/"/g, '\\"');
         console.log('[backend] download requested for:', link);
         await runShellCommand(`mkdir -p "${videosDir}"`);
 
@@ -216,7 +216,6 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ filename }));
       } catch (err) {
-        console.error('[backend] download handler error:', err);
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end(String(err.message || err));
       }
