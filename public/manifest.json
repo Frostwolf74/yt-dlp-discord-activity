@@ -1,0 +1,11 @@
+{
+  "name": "yt-dlp-discord-activity",
+  "type": "discord",
+  "application_id": "1309612526580928515",
+  "version": "1.0.0",
+  "description": "Play videos from YouTube with yt-dlp inside of Discord.",
+  "permissions": [],
+  "instance": true,
+  "gateway_presence": false,
+  "supported_platforms": ["desktop", "ios", "android"]
+}

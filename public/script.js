@@ -25,12 +25,14 @@
     window.__discord = discord;
 })();
 
-const BACKEND_BASE = `${location.protocol}//${location.hostname}:3000`;
+// const BACKEND_BASE = `${location.protocol}//${location.hostname}:3000`; // bad for cloudflare tunneling
 
 async function downloadVideo(link) {
-  const res = await fetch(`${BACKEND_BASE}/download`, {
+  const res = await fetch("/download", {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+        'Content-Type': 'application/json'    
+    },
     body: JSON.stringify({ link })
   });
   if (!res.ok) {
