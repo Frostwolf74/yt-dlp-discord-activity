@@ -104,17 +104,20 @@ const server = http.createServer(async (req, res) => {
           console.warn('Could not determine filename in advance:', err.message);
         }
 
-        // set SSE headers
+        // set SSE headers (include allowed headers for CORS/preflight)
         res.writeHead(200, {
           'Content-Type': 'text/event-stream; charset=utf-8',
           'Cache-Control': 'no-cache',
           Connection: 'keep-alive',
-          'Access-Control-Allow-Origin': '*'
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': 'Content-Type'
         });
         res.write('\n'); // flush
 
         const safeLink = String(link).replace(/"/g, '\\"');
-        const args = ['-f', 'bestvideo+bestaudio', '--merge-output-format', 'mp4', '--newline', '-o', './public/videos/%(title)s.%(ext)s', safeLink];
+        // use absolute output template so yt-dlp always writes into videosDir
+        const absTemplate = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
+        const args = ['-f', 'bestvideo+bestaudio', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
         child.stdout.setEncoding('utf8');
