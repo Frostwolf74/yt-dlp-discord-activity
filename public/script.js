@@ -91,7 +91,7 @@ async function loadVideoFromInput() {
 
     // update UI/title with basename only (match index.html id)
     const titleEl = document.getElementById('video-title');
-    if (titleEl) titleEl.textContent = filename;
+    if (titleEl) titleEl.textContent = filename.replace(".mp4", "");
 
     // build safe URL for the file — encode only the filename part
     const fileUrl = '/videos/' + encodeURIComponent(filename);
