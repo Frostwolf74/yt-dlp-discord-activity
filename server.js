@@ -1,24 +1,25 @@
 import express from "express";
+import cors from "cors";
+import fs from "fs";
 import path from "path";
-import { fileURLToPath } from "url";
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+app.post("/download", (req, res) => {
+    const name = req.body.name;
+    const filePath = path.join("videos", name);
 
-// Serve static files (HTML, JS, CSS, assets)
-app.use(express.static(path.join(__dirname, "public")));
-
-// Videos folder (raw files)
-app.use("/videos", express.static(path.join(__dirname, "public/videos"), {
-    setHeaders(res) {
-        res.setHeader("Access-Control-Allow-Origin", "*");
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: "File not found" });
     }
-}));
 
-app.listen(PORT, () => {
-    console.log(`Discord Activity running at http://localhost:${PORT}`);
+    res.setHeader("Content-Type", "video/mp4");
+    fs.createReadStream(filePath).pipe(res);
 });
 
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
+});
