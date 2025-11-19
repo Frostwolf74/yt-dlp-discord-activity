@@ -10,6 +10,29 @@ const videosDir = path.join(__dirname, 'videos');
 fs.mkdirSync(videosDir, { recursive: true });
 console.log('[backend] videosDir (absolute):', videosDir);
 
+// new: clear videos directory helper
+function clearVideosDir() {
+  try {
+    const entries = fs.readdirSync(videosDir);
+    for (const name of entries) {
+      const full = path.join(videosDir, name);
+      try {
+        const st = fs.lstatSync(full);
+        if (st.isDirectory()) {
+          fs.rmSync(full, { recursive: true, force: true });
+        } else {
+          fs.unlinkSync(full);
+        }
+      } catch (e) {
+        console.warn('[backend] failed to remove', full, e && e.message);
+      }
+    }
+    console.log('[backend] cleared videosDir');
+  } catch (err) {
+    console.warn('[backend] clearVideosDir error:', err && err.message);
+  }
+}
+
 function runShellCommand(cmd, opts = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn('bash', ['-lc', cmd], { stdio: ['ignore', 'pipe', 'pipe'], ...opts });
@@ -94,6 +117,8 @@ const server = http.createServer(async (req, res) => {
         }
 
         await ensureVideosDir();
+        // clear previous videos so each new request starts fresh
+        clearVideosDir();
         // determine filename that will be produced
         let filename = null;
         try {
@@ -114,8 +139,7 @@ const server = http.createServer(async (req, res) => {
         res.write('\n'); // flush
 
         const safeLink = String(link).replace(/"/g, '\\"');
-        // use absolute output template so yt-dlp always writes into videosDir
-        const absTemplate = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
+        // use absolute output template so cwd doesn't matter
         const args = ['-f', 'bestvideo+bestaudio', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
@@ -195,6 +219,8 @@ const server = http.createServer(async (req, res) => {
         const safeLink = String(link).replace(/"/g, '\\"');
         console.log('[backend] download requested for:', link);
         await runShellCommand(`mkdir -p "${videosDir}"`);
+        // remove any previous downloads to avoid filling disk
+        clearVideosDir();
 
         const absTemplate = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
         const downloadCmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "${absTemplate}" "${String(link).replace(/"/g,'\\"')}"`;
