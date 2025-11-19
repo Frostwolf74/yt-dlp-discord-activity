@@ -66,4 +66,6 @@ video {
     border-radius: 10px;
     border: none;
     outline: none;
+    background: #141718;
+    color: white;
 }
