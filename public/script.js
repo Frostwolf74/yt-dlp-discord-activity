@@ -120,6 +120,7 @@ async function loadVideoFromInput() {
 }
 
 async function handleKeyInput(e){
+    console.log(e.key);
     if(e.key !== 'Enter') return;
     // prevent default form behavior if any
     e.preventDefault();
