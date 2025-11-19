@@ -149,3 +149,21 @@ document.addEventListener('keydown', (e) => {
   fileInput.focus();
   loadVideoFromInput().catch(()=>{});
 });
+
+// ensure DOM bindings (input focus / key bindings) and add submit button hook
+window.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('fileInput');
+  if (inp) {
+    inp.addEventListener('keydown', handleKeyInput);
+    try { inp.focus(); } catch (e) {}
+  }
+
+  const submit = document.getElementById('submitBtn');
+  if (submit) {
+    submit.addEventListener('click', (e) => {
+      e.preventDefault();
+      // call the same function that Enter would trigger
+      loadVideoFromInput().catch(()=>{});
+    });
+  }
+});
