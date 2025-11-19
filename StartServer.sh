@@ -38,13 +38,10 @@ start_if_not_running() {
 
 trap 'cleanup; exit' INT TERM
 
-# ensure the correct working directory is selected (public)
-cd "$(dirname "$0")"
-
 # Try to start backend and server. start_if_not_running returns 0 when it started the process.
-start_if_not_running "node \"$ROOT/public/backend.cjs\"" "$PID_BACKEND" "$LOG_BACKEND"
+start_if_not_running "cd \"$ROOT\" && node \"public/backend.cjs\"" "$PID_BACKEND" "$LOG_BACKEND"
 BACK_STARTED=$?
-start_if_not_running "node \"$ROOT/server.js\"" "$PID_SERVER" "$LOG_SERVER"
+start_if_not_running "cd \"$ROOT\" && node \"server.js\"" "$PID_SERVER" "$LOG_SERVER"
 SRV_STARTED=$?
 
 # Read pids (may be pre-existing)
