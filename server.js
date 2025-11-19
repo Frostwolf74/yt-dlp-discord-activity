@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import url from "node:url";
+import fs from "fs";
 
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,9 +14,7 @@ app.use(express.json()); // <-- keep JSON parsing for normal handlers
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/list_videos", (req, res) => {
-  const fs = require("fs");
-  const videoDir = path.join(__dirname, "public/videos");
-
+  const videoDir = path.join(__dirname, "public", "videos");
   fs.readdir(videoDir, (err, files) => {
     if (err) return res.status(500).json({ error: "Unable to list videos" });
     res.json({ videos: files });
