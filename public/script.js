@@ -38,8 +38,28 @@ async function downloadVideo(link) {
     throw new Error('Download failed: ' + txt);
   }
   const data = await res.json();
-  // backend now returns basename only
+  // backend returns basename only
   return data.filename;
+}
+
+async function loadVideo(link) {
+  const fileBasename = await downloadVideo(link); // e.g. "Creed - One Last Breath (...).mp4"
+  console.log('Downloaded file (basename):', fileBasename);
+
+  // update UI/title with basename only
+  const titleEl = document.getElementById('videoTitle');
+  if (titleEl) titleEl.textContent = fileBasename;
+
+  // build safe URL for the file — encode only the filename part
+  const fileUrl = '/videos/' + encodeURIComponent(fileBasename);
+
+  // optional HEAD check
+  const head = await fetch(fileUrl, { method: 'HEAD' });
+  if (!head.ok) throw new Error('File not found on server: ' + fileUrl);
+
+  const player = document.getElementById('player');
+  player.src = fileUrl;
+  await player.play().catch(() => {});
 }
 
 function parseLink(input) {

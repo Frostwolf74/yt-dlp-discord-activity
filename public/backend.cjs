@@ -60,14 +60,14 @@ async function ensureVideosDir() {
 
 async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
-  // use absolute output template so cwd doesn't matter
   const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
   const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --get-filename -o "${template}" "${safeLink}"`;
   const res = await runShellCommand(cmd);
   if (res.code !== 0) throw new Error('yt-dlp failed to get filename: ' + (res.stderr || res.stdout));
   const filename = (res.stdout || '').split(/\r?\n/).find(l => l && l.trim());
   if (!filename) throw new Error('Could not determine filename');
-  return filename.trim();
+  // return basename only so callers don't leak absolute paths
+  return path.basename(filename.trim());
 }
 
 const server = http.createServer(async (req, res) => {
@@ -215,12 +215,10 @@ const server = http.createServer(async (req, res) => {
           console.warn('[backend] could not list videosDir:', e && e.message);
         }
 
-        const filename = (await getFilenameForLink(link)).trim();
-        // after download completes and you determine `filename` (may be absolute)
-        const filenameBasename = path.basename(filename);
-        console.log('[backend] returning filename (basename):', filenameBasename);
+        const filename = await getFilenameForLink(link); // already basename from helper
+        console.log('[backend] returning filename (basename):', filename);
         res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ filename: filenameBasename }));
+        res.end(JSON.stringify({ filename }));
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end(String(err.message || err));
