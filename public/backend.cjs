@@ -27,7 +27,6 @@ function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
 }
-if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
 
 function sseWrite(res, event, data) {
   if (event) res.write(`event: ${event}\n`);
