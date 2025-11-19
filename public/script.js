@@ -129,3 +129,23 @@ async function handleKeyInput(e){
 window.handleKeyInput = handleKeyInput;
 window.loadVideo = loadVideoFromInput;
 window.parseLink = parseLink;
+
+// force focus on load
+window.addEventListener('load', () => {
+  const inp = document.getElementById('fileInput');
+  if (inp && document.activeElement !== inp) try { inp.focus(); } catch(e) {}
+});
+
+// accept enter even if the text box isnt focused
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter') return;
+  const active = (document.activeElement && document.activeElement.tagName) || '';
+  // if user is editing an input/textarea let that element's handler manage it
+  if (active === 'INPUT' || active === 'TEXTAREA' || active === 'SELECT') return;
+  // otherwise, focus the input and trigger load
+  const fileInput = document.getElementById('fileInput');
+  if (!fileInput) return;
+  e.preventDefault();
+  fileInput.focus();
+  loadVideoFromInput().catch(()=>{});
+});
