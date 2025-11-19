@@ -8,18 +8,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// log every incoming request (method, url, headers, small body)
-app.use(express.text({ type: "*/*" })); // allow reading body as text for logging
-app.use((req, res, next) => {
-  console.log(new Date().toISOString(), req.method, req.url);
-  console.log('Headers:', JSON.stringify(req.headers));
-  if (req.body) {
-    try { console.log('Body:', typeof req.body === 'string' ? req.body : JSON.stringify(req.body)); }
-    catch (e) { console.log('Body: [unserializable]'); }
-  }
-  next();
-});
-
 app.use(cors());
 app.use(express.json()); // <-- keep JSON parsing for normal handlers
 app.use(express.static(path.join(__dirname, "public")));
