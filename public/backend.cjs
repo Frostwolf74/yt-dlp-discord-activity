@@ -5,6 +5,11 @@ const { URL } = require('url');
 const fs = require('fs');
 const path = require('path');
 
+// ensure we always write into the public/videos directory next to this file
+const videosDir = path.join(__dirname, 'videos');
+fs.mkdirSync(videosDir, { recursive: true });
+console.log('[backend] videosDir (absolute):', videosDir);
+
 function runShellCommand(cmd, opts = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn('bash', ['-lc', cmd], { stdio: ['ignore', 'pipe', 'pipe'], ...opts });
@@ -55,7 +60,9 @@ async function ensureVideosDir() {
 
 async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
-  const cmd = `mkdir -p ./public/videos && cd ./public/videos && yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --get-filename -o "%(title)s.%(ext)s" "${safeLink}"`;
+  // use absolute output template so cwd doesn't matter
+  const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
+  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --get-filename -o "${template}" "${safeLink}"`;
   const res = await runShellCommand(cmd);
   if (res.code !== 0) throw new Error('yt-dlp failed to get filename: ' + (res.stderr || res.stdout));
   const filename = (res.stdout || '').split(/\r?\n/).find(l => l && l.trim());
@@ -184,9 +191,10 @@ const server = http.createServer(async (req, res) => {
         if (!link) { res.writeHead(400); return res.end('missing link'); }
 
         console.log('[backend] download requested for:', link);
-        await runShellCommand('mkdir -p ./public/videos');
+        await runShellCommand(`mkdir -p "${videosDir}"`);
 
-        const downloadCmd = 'cd ./public/videos && yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "./%(title)s.%(ext)s" "' + String(link).replace(/"/g,'\\"') + '"';
+        const absTemplate = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
+        const downloadCmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "${absTemplate}" "${String(link).replace(/"/g,'\\"')}"`;
         console.log('[backend] spawning yt-dlp:', downloadCmd);
         const dlRes = await runShellCommand(downloadCmd);
         console.log('[backend] yt-dlp exit:', dlRes.code);
@@ -195,6 +203,15 @@ const server = http.createServer(async (req, res) => {
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end(String(dlRes.stderr || dlRes.stdout));
         }
+
+        // debug: list files written to videosDir
+        try {
+          const files = fs.readdirSync(videosDir).filter(f => fs.statSync(path.join(videosDir, f)).isFile());
+          console.log('[backend] files in videosDir after download:', files);
+        } catch (e) {
+          console.warn('[backend] could not list videosDir:', e && e.message);
+        }
+
         const filename = (await getFilenameForLink(link)).trim();
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ filename }));
