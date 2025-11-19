@@ -182,10 +182,16 @@ const server = http.createServer(async (req, res) => {
       try {
         const { link } = JSON.parse(body || '{}');
         if (!link) { res.writeHead(400); return res.end('missing link'); }
-        const safeLink = String(link).replace(/"/g, '\\"');
-        const downloadCmd = 'mkdir -p ./public/videos && cd ./public/videos && yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "./%(title)s.%(ext)s" "' + safeLink + '"';
+
+        console.log('[backend] download requested for:', link);
+        await runShellCommand('mkdir -p ./public/videos');
+
+        const downloadCmd = 'cd ./public/videos && yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 -o "./%(title)s.%(ext)s" "' + String(link).replace(/"/g,'\\"') + '"';
+        console.log('[backend] spawning yt-dlp:', downloadCmd);
         const dlRes = await runShellCommand(downloadCmd);
+        console.log('[backend] yt-dlp exit:', dlRes.code);
         if (dlRes.code !== 0) {
+          console.error('[backend] yt-dlp stderr:', dlRes.stderr);
           res.writeHead(500, { 'Content-Type': 'text/plain' });
           return res.end(String(dlRes.stderr || dlRes.stdout));
         }
@@ -193,6 +199,7 @@ const server = http.createServer(async (req, res) => {
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ filename }));
       } catch (err) {
+        console.error('[backend] download handler error:', err);
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end(String(err.message || err));
       }
