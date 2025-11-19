@@ -25,8 +25,10 @@
     window.__discord = discord;
 })();
 
+const BACKEND_BASE = `${location.protocol}//${location.hostname}:3000`;
+
 async function downloadVideo(link) {
-    const res = await fetch('http://localhost:3000/download', {
+    const res = await fetch(`${BACKEND_BASE}/download`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ link })

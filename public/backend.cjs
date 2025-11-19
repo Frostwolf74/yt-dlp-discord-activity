@@ -27,6 +27,7 @@ function setCorsHeaders(res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
 }
+if (req.method === 'OPTIONS') { res.writeHead(204); return res.end(); }
 
 function sseWrite(res, event, data) {
   if (event) res.write(`event: ${event}\n`);
@@ -228,4 +229,4 @@ const server = http.createServer(async (req, res) => {
 });
 
 const PORT = process.env.YTDLP_BACKEND_PORT || 3000;
-server.listen(PORT, '127.0.0.1', () => console.log(`yt-dlp backend listening on http://127.0.0.1:${PORT}`));
+server.listen(PORT, '0.0.0.0', () => console.log(`yt-dlp backend listening on http://0.0.0.0:${PORT}`));
