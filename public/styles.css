@@ -48,7 +48,7 @@ video {
 
 /* Input box section */
 .input-area {
-    margin-top: 60px; /* Creates nice vertical centering */
+    margin-top: 25px; /* Creates nice vertical centering */
     width: 100%;
     max-width: 1920px;
     padding-left: 100px; 
