@@ -8,6 +8,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
+app.use(express.json()); // <-- add JSON body parsing
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/list_videos", (req, res) => {
@@ -26,6 +27,25 @@ app.get("/download", (req, res) => {
 
   const filePath = path.join(__dirname, "public/videos", name);
   res.download(filePath);
+});
+
+// Proxy POST /download -> local backend (yt-dlp) on 127.0.0.1:3001
+app.post("/download", async (req, res) => {
+  try {
+    const backendUrl = "http://127.0.0.1:3001/download";
+    const backendRes = await fetch(backendUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(req.body || {})
+    });
+    const text = await backendRes.text();
+    res.status(backendRes.status)
+       .type(backendRes.headers.get("content-type") || "application/json")
+       .send(text);
+  } catch (err) {
+    console.error("proxy /download error:", err);
+    res.status(502).json({ error: "bad gateway", message: String(err) });
+  }
 });
 
 // important: catch 404 errors only after all routes have been defined
