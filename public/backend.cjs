@@ -257,5 +257,5 @@ const server = http.createServer(async (req, res) => {
   res.end(JSON.stringify({ error: 'not found' }));
 });
 
-const PORT = process.env.YTDLP_BACKEND_PORT || 3000;
+const PORT = process.env.YTDLP_BACKEND_PORT || 3001;
 server.listen(PORT, '0.0.0.0', () => console.log(`yt-dlp backend listening on http://0.0.0.0:${PORT}`));
