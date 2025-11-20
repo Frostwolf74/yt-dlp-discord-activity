@@ -81,6 +81,7 @@ async function ensureVideosDir() {
   return dir;
 }
 
+// this function does not download and store the video, it simply fetches the name of the video
 async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
   const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
@@ -140,7 +141,8 @@ const server = http.createServer(async (req, res) => {
 
         const safeLink = String(link).replace(/"/g, '\\"');
         // use absolute output template so cwd doesn't matter
-        const args = ['-f', 'bestvideo+bestaudio', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
+        const args = ['-f', 'bestvideo+bestaudio', '--js-runtimes', 'node', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
+        // this actually downloads the video and stores it as a local file
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
         child.stdout.setEncoding('utf8');
