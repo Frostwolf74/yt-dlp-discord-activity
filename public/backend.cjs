@@ -84,8 +84,9 @@ async function ensureVideosDir() {
 // this function does not download and store the video, it simply fetches the name of the video
 async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
-  const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
-  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --js-runtimes node --extractor-args "youtube:player_client=default" --remote-components ejs:github --get-filename -o "${template}" "${safeLink}"`;
+  const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/'); 
+  // --js-runtimes node --remote-components ejs:github
+  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --extractor-args "youtube:player_client=default" --get-filename -o "${template}" "${safeLink}"`;
   const res = await runShellCommand(cmd);
   if (res.code !== 0) throw new Error('yt-dlp failed to get filename: ' + (res.stderr || res.stdout));
   const filename = (res.stdout || '').split(/\r?\n/).find(l => l && l.trim());
@@ -140,8 +141,8 @@ const server = http.createServer(async (req, res) => {
         res.write('\n'); // flush
 
         const safeLink = String(link).replace(/"/g, '\\"');
-        // use absolute output template so cwd doesn't matter
-        const args = ['-f', 'bestvideo+bestaudio', '--js-runtimes', 'node', '--remote-components', '--extractor-args', '\"youtube:player_client=default\"', 'ejs:github', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
+        // use absolute output template so cwd doesn't matter -- '--js-runtimes', 'node', '--remote-components', 'ejs:github'
+        const args = ['-f', 'bestvideo+bestaudio', '--extractor-args', '\"youtube:player_client=default\"', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
         // this actually downloads the video and stores it as a local file
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
