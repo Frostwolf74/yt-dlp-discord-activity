@@ -86,7 +86,7 @@ async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
   const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/'); 
   // --js-runtimes node --remote-components ejs:github
-  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --extractor-args "youtube:player_client=default" --get-filename -o "${template}" "${safeLink}"`;
+  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --extractor-args "youtube:player_client=default" --cookies cookies.txt --get-filename -o "${template}" "${safeLink}"`;
   const res = await runShellCommand(cmd);
   if (res.code !== 0) throw new Error('yt-dlp failed to get filename: ' + (res.stderr || res.stdout));
   const filename = (res.stdout || '').split(/\r?\n/).find(l => l && l.trim());
@@ -142,7 +142,7 @@ const server = http.createServer(async (req, res) => {
 
         const safeLink = String(link).replace(/"/g, '\\"');
         // use absolute output template so cwd doesn't matter -- '--js-runtimes', 'node', '--remote-components', 'ejs:github'
-        const args = ['-f', 'bestvideo+bestaudio', '--extractor-args', '\"youtube:player_client=default\"', '--merge-output-format', 'mp4', '--newline', '-o', absTemplate, safeLink];
+        const args = ['-f', 'bestvideo+bestaudio', '--extractor-args', '\"youtube:player_client=default\"', '--merge-output-format', 'mp4', '--cookies', './cookies.txt', '--newline', '-o', absTemplate, safeLink];
         // this actually downloads the video and stores it as a local file
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
