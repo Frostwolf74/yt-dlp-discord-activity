@@ -130,6 +130,44 @@ window.handleKeyInput = handleKeyInput;
 window.loadVideo = loadVideoFromInput;
 window.parseLink = parseLink;
 
+// Bind input and Enter without inline handlers, plus gesture focus fallback
+window.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('fileInput');
+  if (inp) {
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        // same action as Enter handler
+        loadVideoFromInput().catch((err)=>{ console.error('loadVideo error', err); });
+      }
+    });
+    try { inp.focus(); } catch (e) {}
+  }
+
+  // If the embed blocks keyboard until a user gesture, focus on first pointerdown
+  function tryFocusInput() {
+    const input = document.getElementById('fileInput');
+    if (!input) return;
+    if (document.activeElement !== input) {
+      try { input.focus({preventScroll:true}); } catch(e){ input.focus(); }
+    }
+  }
+
+  // one-off gesture listener: first pointerdown focuses the input
+  const onFirstGesture = (ev) => {
+    tryFocusInput();
+    window.removeEventListener('pointerdown', onFirstGesture, true);
+  };
+  window.addEventListener('pointerdown', onFirstGesture, true);
+
+  // expose a manual activator for SDK / console
+  window.activateKeyboard = () => {
+    tryFocusInput();
+    // return true if focused
+    return document.activeElement && document.activeElement.id === 'fileInput';
+  };
+});
+
 // force focus on load
 window.addEventListener('load', () => {
   const inp = document.getElementById('fileInput');
