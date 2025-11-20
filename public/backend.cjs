@@ -84,7 +84,7 @@ async function ensureVideosDir() {
 async function getFilenameForLink(link) {
   const safeLink = String(link).replace(/"/g, '\\"');
   const template = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
-  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --get-filename -o "${template}" "${safeLink}"`;
+  const cmd = `yt-dlp -f bestvideo+bestaudio --merge-output-format mp4 --js-runtimes node --get-filename -o "${template}" "${safeLink}"`;
   const res = await runShellCommand(cmd);
   if (res.code !== 0) throw new Error('yt-dlp failed to get filename: ' + (res.stderr || res.stdout));
   const filename = (res.stdout || '').split(/\r?\n/).find(l => l && l.trim());
