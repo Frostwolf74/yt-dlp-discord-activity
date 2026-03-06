@@ -21,6 +21,7 @@ app.get("/list_videos", (req, res) => {
   });
 });
 
+// link would look like /download?name=query
 app.get("/download", (req, res) => {
   const name = req.query.name;
   if (!name) return res.status(400).json({ error: "missing name" });
