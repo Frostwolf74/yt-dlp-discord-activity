@@ -141,7 +141,7 @@ const server = http.createServer(async (req, res) => {
 
         const safeLink = String(link).replace(/"/g, '\\"');
         // use absolute output template so cwd doesn't matter
-        const args = ['-f', 'bestvideo+bestaudio', '--cookies-from-browser', 'firefox', '--js-runtimes', 'node', '--remote-components', 'ejs:github', '--extractor-args', '\"youtube:player_client=default\"', '--merge-output-format', 'mp4', '--cookies', '/home/fw/GitHub/yt-dlp-discord-activity/cookies.txt', '--newline', '-o', absTemplate, safeLink];
+        const args = ['-f', 'bestvideo+bestaudio', '--cookies-from-browser', 'firefox', '--js-runtimes', 'node', '--remote-components', 'ejs:github', '--extractor-args', '\"youtube:player_client=default\"', '--merge-output-format', 'mp4', '--cookies', 'cookies.txt', '--newline', '-o', absTemplate, safeLink];
         // this actually downloads the video and stores it as a local file
         const child = spawn('yt-dlp', args, { stdio: ['ignore', 'pipe', 'pipe'] });
 
@@ -225,7 +225,7 @@ const server = http.createServer(async (req, res) => {
         clearVideosDir();
 
         const absTemplate = path.join(videosDir, '%(title)s.%(ext)s').replace(/\\/g, '/');
-        const downloadCmd = `yt-dlp -f bestvideo+bestaudio --cookies-from-browser firefox --js-runtimes node --remote-components ejs:github --merge-output-format mp4 --cookies /home/fw/GitHub/yt-dlp-discord-activity/cookies.txt -o "${absTemplate}" "${String(link).replace(/"/g,'\\"')}"`;
+        const downloadCmd = `yt-dlp -f bestvideo+bestaudio --cookies-from-browser firefox --js-runtimes node --remote-components ejs:github --merge-output-format mp4 --cookies cookies.txt -o "${absTemplate}" "${String(link).replace(/"/g,'\\"')}"`;
         console.log('[backend] spawning yt-dlp:', downloadCmd);
         const dlRes = await runShellCommand(downloadCmd);
         console.log('[backend] yt-dlp exit:', dlRes.code);

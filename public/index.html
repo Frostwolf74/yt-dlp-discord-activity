@@ -15,8 +15,19 @@
                 <h3 id="video-title"></h3>
                 <div class="video-wrapper">
                     <video id="player" controls></video>
+                    <!-- Open the download endpoint in a new tab using the shown video title -->
+                    <button id="downloadBtn" onclick="(function(){
+                        try {
+                            const titleEl = document.getElementById('video-title');
+                            let name = (titleEl && titleEl.textContent) ? titleEl.textContent.trim() : '';
+                            if (!name) return alert('No video selected to download');
+                            if (!/\.mp4$/i.test(name)) name = name + '.mp4';
+                            // encodeURIComponent the filename portion only
+                            const url = '/download?name=' + encodeURIComponent(name);
+                            window.open(url, '_blank');
+                        } catch (e) { console.error(e); }
+                    })()">Download</button>
                 </div>
-
                 <!--the input textbox for the user to enter the youtube url-->
                 <div class="input-area">
                     <input
