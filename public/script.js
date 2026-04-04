@@ -110,6 +110,10 @@ async function loadVideoFromInput() {
       status.style.color = 'red';
       status.textContent = 'Error: ' + (err && err.message ? err.message : String(err));
       setTimeout(() => {
+      	 status.style.color = 'white';
+         status.textContent = 'Having problems? Contact frostwolf74 on discord.'
+      }, 3000);
+      setTimeout(() => {
         status.style.display = 'none';
         status.style.color = 'green';
       }, 5000);
